@@ -16,4 +16,21 @@ export class UserEntity {
   public accountId: string
 
   public account: AccountEntity
+
+  public static build (data): UserEntity {
+    const entity = new UserEntity()
+    entity.id = data.id
+    entity.name = data.name
+    entity.email = data.email
+    entity.password = data.password
+    entity.token = data.token
+    entity.tokenExpires = data.tokenExpires
+    entity.accountId = data.accountId
+
+    if (data.account) {
+      entity.account = AccountEntity.build(data.account)
+    }
+
+    return entity
+  }
 }

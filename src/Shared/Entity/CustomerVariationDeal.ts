@@ -21,6 +21,28 @@ export class CustomerVariationDealEntity {
   public customer: CustomerEntity
 
   public variation: VariationEntity
+
+  public static build (data): CustomerVariationDealEntity {
+    const entity = new CustomerVariationDealEntity()
+    entity.id = data.id
+    entity.variationId = data.variationId
+    entity.customerId = data.customerId
+    entity.variationPrice = data.variationPrice
+    entity.dealPrice = data.dealPrice
+    entity.status = data.status
+    entity.dealUri = data.dealUri
+    entity.dealUriExpires = data.dealUriExpires
+
+    if (data.customer) {
+      entity.customer = CustomerEntity.build(data.customer)
+    }
+
+    if (data.variation) {
+      entity.variation = VariationEntity.build(data.variation)
+    }
+
+    return entity
+  }
 }
 
 export enum CustomerVariationDealStatus {
