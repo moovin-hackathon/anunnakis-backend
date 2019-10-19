@@ -5,49 +5,99 @@ import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 
 const modelsFolder = path.join(__dirname, '/Shared/Database')
+const databases = {}
 const models = {}
 
 dotenv.config()
 
-export const connectToDatabase = (request: Request, response: Response, next: NextFunction) => {
+export const connectToDatabaseAuth = (request: Request, response: Response, next: NextFunction) => {
+  if (databases['auth'] === undefined) {
+    const database = new Sequelize({
+      database: `${process.env.MYSQL_DATABASE_AUTH}`,
+      username: process.env.MYSQL_USERNAME,
+      password: process.env.MYSQL_PASSWORD,
+      host: process.env.MYSQL_HOST,
+      dialect: 'mysql',
+      timezone: 'America/Sao_Paulo',
+      native: false,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
+    })
 
-  const database = new Sequelize({
-    database: process.env.MYSQL_DATABASE,
-    username: process.env.MYSQL_USERNAME,
-    password: process.env.MYSQL_PASSWORD,
-    host: process.env.MYSQL_HOST,
-    port: parseInt(process.env.MYSQL_PORT),
-    dialect: 'mysql',
-    timezone: 'America/Sao_Paulo',
-    native: false,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
-  })
+    fs.readdirSync(modelsFolder).forEach(modelPath => {
+      if (modelPath.substr(-3) === 'map') {
+        return
+      }
 
-  fs.readdirSync(modelsFolder).forEach(modelPath => {
-    if (modelPath.substr(-3) === 'map') {
-      return
-    }
+      modelPath = path.join(modelsFolder, modelPath)
 
-    modelPath = path.join(modelsFolder, modelPath)
+      let model = require(modelPath)
+      model = database.import(modelPath)
 
-    let model = require(modelPath)
-    model = database.import(modelPath)
+      model = model.changeSchema(`${process.env.MYSQL_DATABASE_AUTH}`)
+      models[model.name] = model
+    })
 
-    models[model.name] = model
-  })
-
-  Object.values(models)
-  // @ts-ignore
-    .filter(m => m.associate)
+    Object.values(models)
     // @ts-ignore
-    .forEach(m => m.associate(models))
+      .filter(m => m.associate)
+      // @ts-ignore
+      .forEach(m => m.associate(models))
 
-  request['models'] = database.models
+    databases['auth'] = database
+  }
+
+  request['models'] = databases['auth'].models
+
+  next()
+}
+
+export const connectToDatabase = (request: Request, response: Response, next: NextFunction) => {
+  if (databases[request.header('Account-Id')] === undefined) {
+    const database = new Sequelize({
+      database: `${process.env.MYSQL_DATABASE}_${request.header('Account-Id')}`,
+      username: process.env.MYSQL_USERNAME,
+      password: process.env.MYSQL_PASSWORD,
+      host: process.env.MYSQL_HOST,
+      dialect: 'mysql',
+      timezone: 'America/Sao_Paulo',
+      native: false,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      }
+    })
+
+    fs.readdirSync(modelsFolder).forEach(modelPath => {
+      if (modelPath.substr(-3) === 'map') {
+        return
+      }
+
+      modelPath = path.join(modelsFolder, modelPath)
+
+      let model = require(modelPath)
+      model = database.import(modelPath)
+
+      model = model.changeSchema(`${process.env.MYSQL_DATABASE}_${request.header('1eg-Account-Id')}`)
+      models[model.name] = model
+    })
+
+    Object.values(models)
+    // @ts-ignore
+      .filter(m => m.associate)
+      // @ts-ignore
+      .forEach(m => m.associate(models))
+
+    databases[request.header('Account-Id')] = database
+  }
+
+  request['models'] = databases[request.header('Account-Id')].models
 
   next()
 }
