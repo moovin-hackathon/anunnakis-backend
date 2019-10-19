@@ -1,4 +1,5 @@
 import { CustomerEntity } from './Customer'
+import { VariationEntity } from './Variation'
 
 export class CustomerVariationDealEntity {
   public id: string

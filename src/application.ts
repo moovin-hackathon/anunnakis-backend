@@ -3,6 +3,7 @@ import * as cors from 'cors'
 import * as dotenv from 'dotenv'
 import { ItemDetail } from './Response'
 import { HandlerFactory } from './Factory'
+import { connectToDatabase, connectToDatabaseAuth } from './Middleware'
 
 (async () => {
   dotenv.config()
@@ -12,7 +13,11 @@ import { HandlerFactory } from './Factory'
   application.use(express.json())
   application.use(express.urlencoded({ extended: false }))
   application.use(cors())
-  // application.use(connectToDatabase)
+
+
+
+  application.use(connectToDatabaseAuth)
+  application.use(connectToDatabase)
 
   application.get('/status', (request, response, next) => {
     next(new ItemDetail())

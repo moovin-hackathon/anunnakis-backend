@@ -8,6 +8,8 @@ const modelsFolder = path.join(__dirname, '/Shared/Database')
 const databases = {}
 const models = {}
 
+const modelsAdmin = ['User', 'Account']
+
 dotenv.config()
 
 export const connectToDatabaseAuth = (request: Request, response: Response, next: NextFunction) => {
@@ -29,7 +31,7 @@ export const connectToDatabaseAuth = (request: Request, response: Response, next
     })
 
     fs.readdirSync(modelsFolder).forEach(modelPath => {
-      if (modelPath.substr(-3) === 'map') {
+      if (modelPath.substr(-3) === 'map' || modelsAdmin.indexOf(modelPath.substr(0, modelPath.length - 3)) === -1) {
         return
       }
 
@@ -75,7 +77,7 @@ export const connectToDatabase = (request: Request, response: Response, next: Ne
     })
 
     fs.readdirSync(modelsFolder).forEach(modelPath => {
-      if (modelPath.substr(-3) === 'map') {
+      if (modelPath.substr(-3) === 'map' || modelsAdmin.indexOf(modelPath.substr(0, modelPath.length - 3)) !== -1) {
         return
       }
 

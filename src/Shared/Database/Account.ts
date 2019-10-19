@@ -16,12 +16,5 @@ export default (sequelize, dataTypes: DataTypes) => {
     schemaDelimeter: '`.`'
   })
 
-  Account.associate = models => {
-    Account.hasMany(models.User, {
-      foreignKey: 'accountId',
-      as: 'users'
-    })
-  }
-
   return Account
 }

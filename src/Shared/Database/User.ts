@@ -16,6 +16,7 @@ export default (sequelize, dataTypes: DataTypes) => {
       type: dataTypes.DATE
     },
     accountId: {
+      type: dataTypes.UUIDV4,
       field: 'account_id',
       references: {
         model: 'Account',
@@ -29,13 +30,6 @@ export default (sequelize, dataTypes: DataTypes) => {
   User.changeSchema = schema => User.schema(schema, {
     schemaDelimeter: '`.`'
   })
-
-  User.associate = models => {
-    User.belongsTo(models.Account, {
-      foreignKey: 'accountId',
-      as: 'account'
-    })
-  }
 
   return User
 }

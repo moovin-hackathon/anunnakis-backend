@@ -19,11 +19,11 @@ export default (sequelize, dataTypes: DataTypes) => {
     },
     stockQuantity: {
       field: 'stock_quantity',
-      type: dataTypes.NUMBER
+      type: dataTypes.INTEGER
     },
     uri: dataTypes.STRING,
-    access: dataTypes.NUMBER,
-    sale: dataTypes.NUMBER,
+    access: dataTypes.INTEGER,
+    sale: dataTypes.INTEGER,
     color: dataTypes.STRING,
     grid: dataTypes.STRING,
     gridType: {
