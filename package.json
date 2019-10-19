@@ -1,0 +1,44 @@
+{
+    "name": "anunnakis-backend",
+    "version": "1.0.0",
+    "description": "Api do sistema de B.I Commerce.",
+    "scripts": {
+      "dev": "nodemon --watch \"src/\" -e ts -r ts-node/register src/application.ts",
+      "build": "tsc && copyup ./src/*.yaml ./src/**/*.yaml dist"
+    },
+    "dependencies": {
+      "axios": "^0.18.0",
+      "base-64": "^0.1.0",
+      "camelcase": "^5.3.1",
+      "cors": "^2.8.5",
+      "express": "^4.16.4",
+      "express-redis": "^2.0.1",
+      "jsonwebtoken": "^8.5.1",
+      "lodash": "^4.17.11",
+      "md5": "^2.2.1",
+      "mongoose": "^5.4.16",
+      "mysql2": "^1.6.4",
+      "reflect-metadata": "^0.1.12",
+      "sequelize": "^4.42.0",
+      "sequelize-typescript": "^0.6.6"
+    },
+    "devDependencies": {
+      "@types/dotenv": "^6.1.0",
+      "@types/express": "^4.16.0",
+      "@types/jsonwebtoken": "^8.3.0",
+      "@types/md5": "^2.1.33",
+      "@types/mongoose": "^5.3.6",
+      "@types/node": "^10.12.27",
+      "@types/sequelize": "^4.27.33",
+      "copyfiles": "1.0.0",
+      "dotenv": "^6.1.0",
+      "nodemon": "1.18.7",
+      "sinon": "^7.3.2",
+      "ts-node": "^7.0.1",
+      "typescript": "^3.1.6"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/moovin-hackathon/anunnakis-backend"
+    }
+  }
