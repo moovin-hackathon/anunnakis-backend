@@ -65,6 +65,7 @@ export class CategoryRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.accessCount` DESC'),
+      group: 'Product.category',
       // @ts-ignore
       where
     }
@@ -101,6 +102,7 @@ export class CategoryRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.accessCount` ASC'),
+      group: 'Product.category',
       // @ts-ignore
       where
     }
