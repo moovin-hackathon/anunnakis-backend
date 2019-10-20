@@ -13,11 +13,11 @@ export class Service {
     return this.categoryRepository.getAll()
   }
 
-  public async getMostAccess (filters: Filter): Promise<{ category: string }> {
+  public async getMostAccess (filters: Filter): Promise<any> {
     return this.categoryRepository.getMostAccess(filters)
   }
 
-  public async getLeastAccess (filters: Filter): Promise<{ category: string }> {
+  public async getLeastAccess (filters: Filter): Promise<any> {
     return this.categoryRepository.getLeastAccess(filters)
   }
 }

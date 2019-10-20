@@ -1,11 +1,12 @@
+import * as sequelize from 'sequelize'
 import { WhereOptions } from 'sequelize'
 import { IFindOptions } from 'sequelize-typescript'
 import { ItemListModel } from '../Model'
 import { DataNotFound } from '../Response'
 import { FilterDefault, RepositoryContract } from '../Repository'
-import { ProductEntity } from '../Shared/Entity'
-import * as sequelize from 'sequelize'
+import { NotificationType, ProductEntity } from '../Shared/Entity'
 import { ErrorFactory } from '../Factory'
+import { NotificationFactory } from '../Factory/Notification'
 
 export class ProductRepository extends RepositoryContract {
   readonly Product
@@ -349,6 +350,16 @@ export class ProductRepository extends RepositoryContract {
           transaction
         })
 
+        if (variation.stockQuantity <= 10) {
+          await NotificationFactory.create(
+            this.models,
+            'LOW_STOCK_QUANTITY',
+            NotificationType.VARIATION,
+            variation.sku,
+            'Estoque baixo na variação.'
+          )
+        }
+
         variation.id = variationSaved.id
       }
 
@@ -385,6 +396,16 @@ export class ProductRepository extends RepositoryContract {
         const variationSaved = await this.Variation.insertOrUpdate(variation, {
           transaction
         })
+
+        if (variation.stockQuantity <= 10) {
+          await NotificationFactory.create(
+            this.models,
+            'LOW_STOCK_QUANTITY',
+            NotificationType.VARIATION,
+            variation.sku,
+            'Estoque baixo na variação.'
+          )
+        }
 
         variation.id = variationSaved.id
       }

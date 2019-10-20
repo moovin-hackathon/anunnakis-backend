@@ -48,7 +48,7 @@ export class CategoryRepository extends RepositoryContract {
     }
   }
 
-  public async getMostAccess (filter: Filter): Promise<{ category: string }> {
+  public async getMostAccess (filter: Filter): Promise<any> {
 
     const where: WhereOptions<ProductEntity> = {}
 
@@ -79,11 +79,12 @@ export class CategoryRepository extends RepositoryContract {
     const items = (await this.Product.findAll(options))
 
     return {
-      category: items[0].category
+      category: items[0].category,
+      variation: items[0].variations[0]
     }
   }
 
-  public async getLeastAccess (filter: Filter): Promise<{ category: string }> {
+  public async getLeastAccess (filter: Filter): Promise<any> {
 
     const where: WhereOptions<ProductEntity> = {}
 
@@ -114,7 +115,8 @@ export class CategoryRepository extends RepositoryContract {
     const items = (await this.Product.findAll(options))
 
     return {
-      category: items[0].category
+      category: items[0].category,
+      variation: items[0].variations[0]
     }
   }
 }
