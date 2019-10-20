@@ -22,6 +22,9 @@ import { Handler as ProductHandler } from './Product/Handler'
     next(new ItemDetail())
   })
 
+  // With Rules
+  application.get('/product/mostAccess', new ProductHandler().getMostAccess)
+
   application.get('/product', new ProductHandler().getAll)
   application.get('/product/:id', new ProductHandler().get)
 
