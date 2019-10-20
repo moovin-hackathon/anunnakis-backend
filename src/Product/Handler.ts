@@ -8,6 +8,10 @@ export class Handler {
   public constructor () {
     this.getAll = this.getAll.bind(this)
     this.get = this.get.bind(this)
+    this.getMostSales = this.getMostSales.bind(this)
+    this.getLeastSales = this.getLeastSales.bind(this)
+    this.getMostAccess = this.getMostAccess.bind(this)
+    this.getLeastAccess = this.getLeastAccess.bind(this)
   }
 
   public async getAll(request: Request, response: Response, next: NextFunction) {
@@ -60,6 +64,33 @@ export class Handler {
       const product = await service.get(request.params.id)
 
       next(new ItemDetail(this.formatProduct(product)))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
+  public async getMostAccess (request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const service: Service = new Service(productRepository)
+
+    try {
+      const result = await service.getMostAccess(request.query)
+
+      next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+  public async getLeastAccess (request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const service: Service = new Service(productRepository)
+
+    try {
+      const result = await service.getLeastAccess(request.query)
+
+      next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
     } catch (e) {
       console.error(e)
       next(e)

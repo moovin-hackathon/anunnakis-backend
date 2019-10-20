@@ -4,6 +4,7 @@ import { ItemListModel } from '../Model'
 import { DataNotFound } from '../Response'
 import { FilterDefault, RepositoryContract } from '../Repository'
 import { ProductEntity } from '../Shared/Entity'
+import * as sequelize from 'sequelize'
 
 export class ProductRepository extends RepositoryContract {
   readonly Product
@@ -153,6 +154,75 @@ export class ProductRepository extends RepositoryContract {
     }
   }
 
+  public async getMostAccess (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)'), 'accessCount']
+          ]),
+        }
+      ],
+      order: sequelize.literal('`variations.accessCount` DESC'),
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options))
+
+    return {
+      items,
+      total
+    }
+  }
+
+  public async getLeastAccess (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    const options: IFindOptions<ProductEntity> = {
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations'
+        }
+      ],
+      order: [
+        ['sale', 'ASC']
+      ],
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+
+    return {
+      items,
+      total
+    }
+  }
+
   public async get (id: string): Promise<ProductEntity> {
 
     const options: IFindOptions<ProductEntity> = {
@@ -194,4 +264,6 @@ export class ProductRepository extends RepositoryContract {
 export interface Filter extends FilterDefault {
   category?: string
   title?: string
+  dateFrom?: Date
+  dateTo?: Date
 }
