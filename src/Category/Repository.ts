@@ -47,6 +47,76 @@ export class CategoryRepository extends RepositoryContract {
       total
     }
   }
+
+  public async getMostAccess (filter: Filter): Promise<{ category: string }> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+          ]),
+        }
+      ],
+      order: sequelize.literal('`variations.accessCount` DESC'),
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options))
+
+    return {
+      category: items[0].category
+    }
+  }
+
+  public async getLeastAccess (filter: Filter): Promise<{ category: string }> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+          ]),
+        }
+      ],
+      order: sequelize.literal('`variations.accessCount` ASC'),
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options))
+
+    return {
+      category: items[0].category
+    }
+  }
 }
 
 export interface Filter extends FilterDefault {

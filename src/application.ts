@@ -46,6 +46,8 @@ import { Handler as CategoryHandler } from './Category/Handler'
   application.put('/product/:id/variations', new ProductHandler().putVariations)
 
   application.get('/category', new CategoryHandler().getAll)
+  application.get('/category/most_access', new CategoryHandler().getMostAccess)
+  application.get('/category/least_access', new CategoryHandler().getLeastAccess)
 
   application.use(HandlerFactory.getSuccessHandler().success)
   application.use(HandlerFactory.getErrorHandler().error)
