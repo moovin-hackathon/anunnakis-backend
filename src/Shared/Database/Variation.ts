@@ -22,8 +22,6 @@ export default (sequelize, dataTypes: DataTypes) => {
       type: dataTypes.INTEGER
     },
     uri: dataTypes.STRING,
-    access: dataTypes.INTEGER,
-    sale: dataTypes.INTEGER,
     color: dataTypes.STRING,
     grid: dataTypes.STRING,
     gridType: {
@@ -42,6 +40,14 @@ export default (sequelize, dataTypes: DataTypes) => {
     Variation.belongsTo(models.Product, {
       foreignKey: 'productId',
       as: 'product'
+    })
+    Variation.hasMany(models.VariationSale, {
+      foreignKey: 'variationId',
+      as: 'sales'
+    })
+    Variation.hasMany(models.VariationAccess, {
+      foreignKey: 'variationId',
+      as: 'accesses'
     })
   }
 
