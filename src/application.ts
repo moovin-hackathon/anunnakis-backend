@@ -29,6 +29,9 @@ import { Handler as NotificationHandler } from './Notification/Handler'
   application.get('/product/most_sales', new ProductHandler().getMostSales)
   application.get('/product/least_sales', new ProductHandler().getLeastSales)
 
+  application.get('/product/need_buy', new ProductHandler().getNeedBuy)
+  application.get('/product/need_sell', new ProductHandler().getNeedSell)
+
   application.get('/notification', new NotificationHandler().getAll)
   application.post('/notification', new NotificationHandler().post)
   application.put('/notification/:id/viewed', new NotificationHandler().putViewed)

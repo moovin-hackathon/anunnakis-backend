@@ -15,6 +15,8 @@ export class Handler {
     this.getLeastSales = this.getLeastSales.bind(this)
     this.getMostAccess = this.getMostAccess.bind(this)
     this.getLeastAccess = this.getLeastAccess.bind(this)
+    this.getNeedBuy = this.getNeedBuy.bind(this)
+    this.getNeedSell = this.getNeedSell.bind(this)
   }
 
   public async getAll(request: Request, response: Response, next: NextFunction) {
@@ -123,6 +125,34 @@ export class Handler {
 
     try {
       const result = await service.getLeastAccess(request.query)
+
+      next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
+  public async getNeedBuy (request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const service: Service = new Service(productRepository)
+
+    try {
+      const result = await service.getNeedBuy(request.query)
+
+      next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
+  public async getNeedSell (request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const service: Service = new Service(productRepository)
+
+    try {
+      const result = await service.getNeedSell(request.query)
 
       next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
     } catch (e) {

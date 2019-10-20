@@ -217,6 +217,86 @@ export class ProductRepository extends RepositoryContract {
     }
   }
 
+  public async getNeedBuy (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+          ])
+            .concat([
+              //@ts-ignore
+              [sequelize.literal('(sum(variations.stock_quantity))'), 'totalQuantity'],
+            ])
+        }
+      ],
+      order: sequelize.literal('`variations.accessCount` DESC, `variations.totalQuantity` ASC'),
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options))
+
+    return {
+      items,
+      total
+    }
+  }
+
+  public async getNeedSell (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+          ])
+            .concat([
+              //@ts-ignore
+              [sequelize.literal('(sum(variations.stock_quantity))'), 'totalQuantity'],
+            ])
+        }
+      ],
+      order: sequelize.literal('`variations.accessCount` ASC, `variations.totalQuantity` DESC'),
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options))
+
+    return {
+      items,
+      total
+    }
+  }
+
   public async get (id: string): Promise<ProductEntity> {
 
     const options: IFindOptions<ProductEntity> = {

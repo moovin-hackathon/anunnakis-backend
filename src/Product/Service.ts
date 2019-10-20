@@ -30,6 +30,13 @@ export class Service {
     return this.productRepository.getLeastAccess(filters)
   }
 
+  public async getNeedBuy (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+    return this.productRepository.getNeedBuy(filter)
+  }
+  public async getNeedSell (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+    return this.productRepository.getNeedSell(filter)
+  }
+
   public async get (id: string): Promise<ProductEntity> {
     return this.productRepository.get(id)
   }
