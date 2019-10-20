@@ -56,6 +56,10 @@ export class Service {
 
     const variations: VariationEntity[] = []
 
+    const idsToDelete = product.variations.filter(
+      variation => body.find(bodyVariation => bodyVariation.sku == variation.sku) === undefined
+    ).map(variation => variation.id)
+
     for (const variation of body) {
 
       const oldVariation = product.variations.find(oldVariation => oldVariation.sku === variation.sku)
@@ -68,7 +72,7 @@ export class Service {
 
     product.variations = variations
 
-    return this.productRepository.update(product)
+    return this.productRepository.update(product, idsToDelete)
   }
 }
 

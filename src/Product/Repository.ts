@@ -13,6 +13,7 @@ export class ProductRepository extends RepositoryContract {
   readonly Variation
   readonly VariationSale
   readonly VariationAccess
+  readonly CustomerVariationDeal
 
   public constructor (readonly models) {
     super()
@@ -21,6 +22,7 @@ export class ProductRepository extends RepositoryContract {
     this.Variation = this.models.Variation
     this.VariationSale = this.models.VariationSale
     this.VariationAccess = this.models.VariationAccess
+    this.CustomerVariationDeal = this.models.CustomerVariationDeal
   }
 
   public async getAll (filter: Filter): Promise<ItemListModel<ProductEntity>> {
@@ -382,13 +384,43 @@ export class ProductRepository extends RepositoryContract {
     return this.get(product.id)
   }
 
-  public async update (product: ProductEntity): Promise<ProductEntity> {
+  public async update (product: ProductEntity, deleteVariations: string[]): Promise<ProductEntity> {
     const transaction = await this.Product.sequelize.transaction()
 
     try {
       await this.Product.insertOrUpdate(product, {
         transaction
       })
+
+      for (const id of deleteVariations) {
+        await this.VariationAccess.destroy({
+          where: {
+            variationId: id
+          },
+          transaction
+        })
+
+        await this.VariationSale.destroy({
+          where: {
+            variationId: id
+          },
+          transaction
+        })
+
+        await this.CustomerVariationDeal.destroy({
+          where: {
+            variationId: id
+          },
+          transaction
+        })
+
+        await this.Variation.destroy({
+          where: {
+            id: id
+          },
+          transaction
+        })
+      }
 
       for (const variation of product.variations) {
         variation.productId = product.id
