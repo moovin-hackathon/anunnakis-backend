@@ -1,4 +1,6 @@
 import { ProductEntity } from './Product'
+import { VariationSaleEntity } from './VariationSale'
+import { VariationAccessEntity } from './VariationAccess'
 
 export class VariationEntity {
   public id: string
@@ -15,10 +17,6 @@ export class VariationEntity {
 
   public uri: string
 
-  public access: number
-
-  public sale: number
-
   public color: string
 
   public grid: string
@@ -26,6 +24,10 @@ export class VariationEntity {
   public gridType: VariationGridType
 
   public product: ProductEntity
+
+  public sales: VariationSaleEntity[]
+
+  public accesses: VariationAccessEntity[]
 
   public static build (data): VariationEntity {
     const entity = new VariationEntity()
@@ -36,14 +38,20 @@ export class VariationEntity {
     entity.currentPrice = data.currentPrice
     entity.stockQuantity = data.stockQuantity
     entity.uri = data.uri
-    entity.access = data.access
-    entity.sale = data.sale
     entity.color = data.color
     entity.grid = data.grid
     entity.gridType = VariationGridType[data.gridType.toUpperCase()]
 
     if (data.product) {
       entity.product = ProductEntity.build(data.product)
+    }
+
+    if (data.sales) {
+      entity.sales = data.sales.map(VariationSaleEntity.build)
+    }
+
+    if (data.accesses) {
+      entity.accesses = data.accesses.map(VariationAccessEntity.build)
     }
 
     return entity
