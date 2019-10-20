@@ -38,23 +38,23 @@ export class ProductRepository extends RepositoryContract {
     }
 
     const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
       include: [
         {
           model: this.Variation,
           as: 'variations',
-          include: [
-            {
-              model: this.VariationAccess,
-              as: 'accesses'
-            },
-            {
-              model: this.VariationSale,
-              as: 'sales'
-            }
-          ]
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_sale WHERE `variation_sale`.`variation_id` = `variations`.`id`)))'), 'saleCount'],
+          ])
+            .concat([
+              //@ts-ignore
+              [sequelize.literal('(sum(variations.stock_quantity))'), 'totalQuantity'],
+            ])
         }
       ],
       order: [
+        sequelize.literal('`variations.totalQuantity` DESC'),
         ['title', 'ASC']
       ],
       // @ts-ignore
@@ -68,7 +68,7 @@ export class ProductRepository extends RepositoryContract {
 
     this.applyPaginator(filter, options)
 
-    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+    const items = (await this.Product.findAll(options))
 
     return {
       items,
