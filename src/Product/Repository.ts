@@ -166,7 +166,7 @@ export class ProductRepository extends RepositoryContract {
           as: 'variations',
           attributes: Object.keys(this.Variation.attributes).concat([
             //@ts-ignore
-            [sequelize.literal('(SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)'), 'accessCount']
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
           ]),
         }
       ],
