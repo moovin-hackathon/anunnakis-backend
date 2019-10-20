@@ -29,6 +29,7 @@ import { Handler as ProductHandler } from './Product/Handler'
   application.get('/product/least_sales', new ProductHandler().getLeastSales)
 
   application.get('/product', new ProductHandler().getAll)
+  application.post('/product', new ProductHandler().post)
   application.get('/product/:id', new ProductHandler().get)
 
   application.use(HandlerFactory.getSuccessHandler().success)

@@ -5,6 +5,7 @@ import { DataNotFound } from '../Response'
 import { FilterDefault, RepositoryContract } from '../Repository'
 import { ProductEntity } from '../Shared/Entity'
 import * as sequelize from 'sequelize'
+import { ErrorFactory } from '../Factory'
 
 export class ProductRepository extends RepositoryContract {
   readonly Product
@@ -251,6 +252,23 @@ export class ProductRepository extends RepositoryContract {
     }
 
     return ProductEntity.build(product)
+  }
+
+  public async create (product: ProductEntity): Promise<ProductEntity> {
+    try {
+      await new this.Product(product).save()
+    } catch (e) {
+      let error = e
+
+      try {
+        error = ErrorFactory.getFromSequelizeError(e)
+      } catch (e) {
+      }
+
+      throw error
+    }
+
+    return this.get(product.id)
   }
 }
 

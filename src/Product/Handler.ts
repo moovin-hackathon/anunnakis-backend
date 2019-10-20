@@ -3,6 +3,7 @@ import { ProductRepository } from './Repository'
 import { Service } from './Service'
 import { ItemDetail, ItemList } from '../Response'
 import { ProductEntity, VariationEntity } from '../Shared/Entity'
+import { Validator } from './Validator'
 
 export class Handler {
   public constructor () {
@@ -70,6 +71,21 @@ export class Handler {
     }
   }
 
+  public async post (request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const validator: Validator = new Validator()
+    const service: Service = new Service(productRepository, validator)
+
+    try {
+      const product = await service.post(request.body)
+
+      next(new ItemDetail(this.formatProduct(product)))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
   public async getMostAccess (request: Request, response: Response, next: NextFunction) {
     const productRepository: ProductRepository = new ProductRepository(request['models'])
     const service: Service = new Service(productRepository)
@@ -83,7 +99,7 @@ export class Handler {
       next(e)
     }
   }
-  
+
   public async getLeastAccess (request: Request, response: Response, next: NextFunction) {
     const productRepository: ProductRepository = new ProductRepository(request['models'])
     const service: Service = new Service(productRepository)
