@@ -10,6 +10,7 @@ export class Handler {
     this.getAll = this.getAll.bind(this)
     this.get = this.get.bind(this)
     this.post = this.post.bind(this)
+    this.putVariations = this.putVariations.bind(this)
     this.getMostSales = this.getMostSales.bind(this)
     this.getLeastSales = this.getLeastSales.bind(this)
     this.getMostAccess = this.getMostAccess.bind(this)
@@ -79,6 +80,21 @@ export class Handler {
 
     try {
       const product = await service.post(request.body)
+
+      next(new ItemDetail(this.formatProduct(product)))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
+  public async putVariations (request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const validator: Validator = new Validator()
+    const service: Service = new Service(productRepository, validator)
+
+    try {
+      const product = await service.putVariations(request.params.id, request.body)
 
       next(new ItemDetail(this.formatProduct(product)))
     } catch (e) {

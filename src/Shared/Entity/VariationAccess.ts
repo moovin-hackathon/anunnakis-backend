@@ -9,7 +9,7 @@ export class VariationAccessEntity {
     const entity = new VariationAccessEntity()
     entity.id = data.id
     entity.variationId = data.variationId
-    entity.createdAt = data.createdAt
+
 
     return entity
   }

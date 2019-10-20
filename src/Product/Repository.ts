@@ -224,17 +224,7 @@ export class ProductRepository extends RepositoryContract {
       include: [
         {
           model: this.Variation,
-          as: 'variations',
-          include: [
-            {
-              model: this.VariationAccess,
-              as: 'accesses'
-            },
-            {
-              model: this.VariationSale,
-              as: 'sales'
-            }
-          ]
+          as: 'variations'
         }
       ],
       order: [
@@ -255,20 +245,68 @@ export class ProductRepository extends RepositoryContract {
   }
 
   public async create (product: ProductEntity): Promise<ProductEntity> {
+    const transaction = await this.Product.sequelize.transaction()
+
     try {
-      const productSaved = await new this.Product(product).save()
+      const productSaved = await new this.Product(product).save({
+        transaction
+      })
 
       product.id = productSaved.id
 
       for (const variation of product.variations) {
         variation.productId = product.id
 
-        const variationSaved = await new this.Variation(variation).save()
+        const variationSaved = await new this.Variation(variation).save({
+          transaction
+        })
 
         variation.id = variationSaved.id
       }
 
+      await transaction.commit()
+
     } catch (e) {
+
+      await transaction.rollback()
+
+      let error = e
+
+      try {
+        error = ErrorFactory.getFromSequelizeError(e)
+      } catch (e) {
+      }
+
+      throw error
+    }
+
+    return this.get(product.id)
+  }
+
+  public async update (product: ProductEntity): Promise<ProductEntity> {
+    const transaction = await this.Product.sequelize.transaction()
+
+    try {
+      await this.Product.insertOrUpdate(product, {
+        transaction
+      })
+
+      for (const variation of product.variations) {
+        variation.productId = product.id
+
+        const variationSaved = await this.Variation.insertOrUpdate(variation, {
+          transaction
+        })
+
+        variation.id = variationSaved.id
+      }
+
+      await transaction.commit()
+
+    } catch (e) {
+
+      await transaction.rollback()
+
       let error = e
 
       try {

@@ -9,7 +9,6 @@ export class VariationSaleEntity {
     const entity = new VariationSaleEntity()
     entity.id = data.id
     entity.variationId = data.variationId
-    entity.createdAt = data.createdAt
 
     return entity
   }

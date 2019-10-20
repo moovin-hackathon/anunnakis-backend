@@ -1,6 +1,6 @@
 import { Filter, ProductRepository } from './Repository'
 import { ItemListModel } from '../Model'
-import { ProductEntity, VariationGridType } from '../Shared/Entity'
+import { ProductEntity, VariationEntity, VariationGridType } from '../Shared/Entity'
 import { Validator } from './Validator'
 
 export class Service {
@@ -40,6 +40,28 @@ export class Service {
     const product: ProductEntity = ProductEntity.build(body)
 
     return this.productRepository.create(product)
+  }
+
+  public async putVariations (id: string, body: VariationPayload[]): Promise<ProductEntity> {
+    await this.validator.putVariations({ variations: body })
+
+    const product: ProductEntity = await this.get(id)
+
+    const variations: VariationEntity[] = []
+
+    for (const variation of body) {
+
+      const oldVariation = product.variations.find(oldVariation => oldVariation.sku === variation.sku)
+      if (oldVariation !== undefined) {
+        variation['id'] = oldVariation.id
+      }
+
+      variations.push(VariationEntity.build(variation))
+    }
+
+    product.variations = variations
+
+    return this.productRepository.update(product)
   }
 }
 
