@@ -256,7 +256,18 @@ export class ProductRepository extends RepositoryContract {
 
   public async create (product: ProductEntity): Promise<ProductEntity> {
     try {
-      await new this.Product(product).save()
+      const productSaved = await new this.Product(product).save()
+
+      product.id = productSaved.id
+
+      for (const variation of product.variations) {
+        variation.productId = product.id
+
+        const variationSaved = await new this.Variation(variation).save()
+
+        variation.id = variationSaved.id
+      }
+
     } catch (e) {
       let error = e
 

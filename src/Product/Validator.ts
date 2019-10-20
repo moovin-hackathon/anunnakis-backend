@@ -24,49 +24,50 @@ export class Validator {
         type: String
       },
       variations: {
-        type: Array,
-        items: {
-          sku: {
-            required: true,
-            type: String
-          },
-          images: {
-            required: true,
-            type: [String]
-          },
-          previousPrice: {
-            required: true,
-            type: Number
-          },
-          currentPrice: {
-            required: true,
-            type: Number
-          },
-          stockQuantity: {
-            required: true,
-            type: Number
-          },
-          uri: {
-            required: true,
-            type: String
-          },
-          color: {
-            type: String
-          },
-          grid: {
-            type: String
-          },
-          gridType: {
-            type: String,
-            validate: function (gridType) {
-              if (gridType && VariationGridType[gridType.toUpperCase()] !== undefined) {
-                return true
-              }
+        type: [
+          {
+            sku: {
+              required: true,
+              type: String
+            },
+            images: {
+              required: true,
+              type: [String]
+            },
+            previousPrice: {
+              required: true,
+              type: Number
+            },
+            currentPrice: {
+              required: true,
+              type: Number
+            },
+            stockQuantity: {
+              required: true,
+              type: Number
+            },
+            uri: {
+              required: true,
+              type: String
+            },
+            color: {
+              type: String
+            },
+            grid: {
+              type: String
+            },
+            gridType: {
+              type: String,
+              validate: function (gridType) {
+                if (gridType && VariationGridType[gridType.toUpperCase()] !== undefined) {
+                  return true
+                }
 
-              return false
+                return false
+              }
             }
           }
-        },
+        ],
         validate: function (variations) {
           if (variations.length) {
             return true

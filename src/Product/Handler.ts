@@ -9,6 +9,7 @@ export class Handler {
   public constructor () {
     this.getAll = this.getAll.bind(this)
     this.get = this.get.bind(this)
+    this.post = this.post.bind(this)
     this.getMostSales = this.getMostSales.bind(this)
     this.getLeastSales = this.getLeastSales.bind(this)
     this.getMostAccess = this.getMostAccess.bind(this)
