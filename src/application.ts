@@ -5,6 +5,7 @@ import { ItemDetail } from './Response'
 import { HandlerFactory } from './Factory'
 import { connectToDatabase, connectToDatabaseAuth } from './Middleware'
 import { Handler as ProductHandler } from './Product/Handler'
+import { Handler as NotificationHandler } from './Notification/Handler'
 
 (async () => {
   dotenv.config()
@@ -27,6 +28,10 @@ import { Handler as ProductHandler } from './Product/Handler'
   application.get('/product/least_access', new ProductHandler().getLeastAccess)
   application.get('/product/most_sales', new ProductHandler().getMostSales)
   application.get('/product/least_sales', new ProductHandler().getLeastSales)
+
+  application.get('/notification', new NotificationHandler().getAll)
+  application.post('/notification', new NotificationHandler().post)
+  application.put('/notification/:id/viewed', new NotificationHandler().putViewed)
 
   application.get('/product', new ProductHandler().getAll)
   application.post('/product', new ProductHandler().post)
