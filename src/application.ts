@@ -7,6 +7,7 @@ import { connectToDatabase, connectToDatabaseAuth } from './Middleware'
 import { Handler as ProductHandler } from './Product/Handler'
 import { Handler as NotificationHandler } from './Notification/Handler'
 import { Handler as ManagerHandler } from './Manager/Handler'
+import { Handler as CategoryHandler } from './Category/Handler'
 
 (async () => {
   dotenv.config()
@@ -43,6 +44,8 @@ import { Handler as ManagerHandler } from './Manager/Handler'
   application.post('/product', new ProductHandler().post)
   application.get('/product/:id', new ProductHandler().get)
   application.put('/product/:id/variations', new ProductHandler().putVariations)
+
+  application.get('/category', new CategoryHandler().getAll)
 
   application.use(HandlerFactory.getSuccessHandler().success)
   application.use(HandlerFactory.getErrorHandler().error)
