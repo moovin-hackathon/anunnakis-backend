@@ -6,6 +6,7 @@ import { HandlerFactory } from './Factory'
 import { connectToDatabase, connectToDatabaseAuth } from './Middleware'
 import { Handler as ProductHandler } from './Product/Handler'
 import { Handler as NotificationHandler } from './Notification/Handler'
+import { Handler as ManagerHandler } from './Manager/Handler'
 
 (async () => {
   dotenv.config()
@@ -31,6 +32,8 @@ import { Handler as NotificationHandler } from './Notification/Handler'
 
   application.get('/product/need_buy', new ProductHandler().getNeedBuy)
   application.get('/product/need_sell', new ProductHandler().getNeedSell)
+
+  application.get('/manager', new ManagerHandler().getAll)
 
   application.get('/notification', new NotificationHandler().getAll)
   application.post('/notification', new NotificationHandler().post)
