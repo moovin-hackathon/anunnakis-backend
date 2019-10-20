@@ -25,11 +25,11 @@ export class ProductRepository extends RepositoryContract {
     const where: WhereOptions<ProductEntity> = {}
 
     if (filter.category) {
-      where.category = { $like: `5${filter.category}%` }
+      where.category = { $like: `%${filter.category}%` }
     }
 
     if (filter.title) {
-      where.title = { $like: `5${filter.title}%` }
+      where.title = { $like: `%${filter.title}%` }
     }
 
     const options: IFindOptions<ProductEntity> = {
@@ -51,6 +51,88 @@ export class ProductRepository extends RepositoryContract {
       ],
       order: [
         ['title', 'ASC']
+      ],
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+
+    return {
+      items,
+      total
+    }
+  }
+
+  public async getMostSales (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    if (filter.category) {
+      where.category = { $like: `%${filter.category}%` }
+    }
+
+    if (filter.title) {
+      where.title = { $like: `%${filter.title}%` }
+    }
+
+    const options: IFindOptions<ProductEntity> = {
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations'
+        }
+      ],
+      order: [
+        ['sale', 'DESC']
+      ],
+      // @ts-ignore
+      where
+    }
+
+    const total = await this.Product.count({
+      // @ts-ignore
+      where
+    })
+
+    this.applyPaginator(filter, options)
+
+    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+
+    return {
+      items,
+      total
+    }
+  }
+
+  public async getLeastSales (filter: Filter): Promise<ItemListModel<ProductEntity>> {
+
+    const where: WhereOptions<ProductEntity> = {}
+
+    if (filter.category) {
+      where.category = { $like: `%${filter.category}%` }
+    }
+
+    if (filter.title) {
+      where.title = { $like: `%${filter.title}%` }
+    }
+
+    const options: IFindOptions<ProductEntity> = {
+      include: [
+        {
+          model: this.Variation,
+          as: 'variations'
+        }
+      ],
+      order: [
+        ['sale', 'ASC']
       ],
       // @ts-ignore
       where
