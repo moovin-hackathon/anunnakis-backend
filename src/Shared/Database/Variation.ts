@@ -7,6 +7,14 @@ export default (sequelize, dataTypes: DataTypes) => {
       defaultValue: dataTypes.UUIDV4,
       primaryKey: true
     },
+    productId: {
+      type: dataTypes.UUIDV4,
+      field: 'product_id',
+      references: {
+        model: 'Product',
+        key: 'id'
+      }
+    },
     sku: dataTypes.STRING,
     images: dataTypes.JSON,
     previousPrice: {

@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv'
 import { ItemDetail } from './Response'
 import { HandlerFactory } from './Factory'
 import { connectToDatabase, connectToDatabaseAuth } from './Middleware'
+import { Handler as ProductHandler } from './Product/Handler'
 
 (async () => {
   dotenv.config()
@@ -14,14 +15,15 @@ import { connectToDatabase, connectToDatabaseAuth } from './Middleware'
   application.use(express.urlencoded({ extended: false }))
   application.use(cors())
 
-
-
   application.use(connectToDatabaseAuth)
   application.use(connectToDatabase)
 
   application.get('/status', (request, response, next) => {
     next(new ItemDetail())
   })
+
+  application.get('/product', new ProductHandler().getAll)
+  application.get('/product/:id', new ProductHandler().get)
 
   application.use(HandlerFactory.getSuccessHandler().success)
   application.use(HandlerFactory.getErrorHandler().error)
