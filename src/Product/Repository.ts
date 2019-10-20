@@ -57,6 +57,7 @@ export class ProductRepository extends RepositoryContract {
         sequelize.literal('`variations.totalQuantity` DESC'),
         ['title', 'ASC']
       ],
+      group: 'Product.id',
       // @ts-ignore
       where
     }
