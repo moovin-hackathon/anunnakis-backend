@@ -78,10 +78,10 @@ export class CategoryRepository extends RepositoryContract {
 
     const items = (await this.Product.findAll(options))
 
-    return {
-      category: items[0].category,
-      variation: items[0].variations[0]
-    }
+    return items.map(item => ({
+      category: item.category,
+      variation: item.variations[0]
+    }))
   }
 
   public async getLeastAccess (filter: Filter): Promise<any> {
@@ -114,10 +114,10 @@ export class CategoryRepository extends RepositoryContract {
 
     const items = (await this.Product.findAll(options))
 
-    return {
-      category: items[0].category,
-      variation: items[0].variations[0]
-    }
+    return items.map(item => ({
+      category: item.category,
+      variation: item.variations[0]
+    }))
   }
 }
 
