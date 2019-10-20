@@ -64,6 +64,7 @@ export class ManagerRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal(order),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
