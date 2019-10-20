@@ -221,6 +221,10 @@ export class ProductRepository extends RepositoryContract {
 
     const where: WhereOptions<ProductEntity> = {}
 
+    if (filter.category) {
+      where.category = filter.category
+    }
+
     const options: IFindOptions<ProductEntity> = {
       subQuery: false,
       include: [
@@ -229,7 +233,7 @@ export class ProductRepository extends RepositoryContract {
           as: 'variations',
           attributes: Object.keys(this.Variation.attributes).concat([
             //@ts-ignore
-            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_sale WHERE `variation_sale`.`variation_id` = `variations`.`id`)))'), 'saleCount'],
           ])
             .concat([
               //@ts-ignore
@@ -237,7 +241,7 @@ export class ProductRepository extends RepositoryContract {
             ])
         }
       ],
-      order: sequelize.literal('`variations.accessCount` DESC, `variations.totalQuantity` ASC'),
+      order: sequelize.literal('`variations.saleCount` DESC, `variations.totalQuantity` ASC'),
       // @ts-ignore
       where
     }
@@ -261,6 +265,10 @@ export class ProductRepository extends RepositoryContract {
 
     const where: WhereOptions<ProductEntity> = {}
 
+    if (filter.category) {
+      where.category = filter.category
+    }
+
     const options: IFindOptions<ProductEntity> = {
       subQuery: false,
       include: [
@@ -269,7 +277,7 @@ export class ProductRepository extends RepositoryContract {
           as: 'variations',
           attributes: Object.keys(this.Variation.attributes).concat([
             //@ts-ignore
-            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_sale WHERE `variation_sale`.`variation_id` = `variations`.`id`)))'), 'saleCount'],
           ])
             .concat([
               //@ts-ignore
@@ -277,7 +285,7 @@ export class ProductRepository extends RepositoryContract {
             ])
         }
       ],
-      order: sequelize.literal('`variations.accessCount` ASC, `variations.totalQuantity` DESC'),
+      order: sequelize.literal('`variations.saleCount` ASC, `variations.totalQuantity` DESC'),
       // @ts-ignore
       where
     }
