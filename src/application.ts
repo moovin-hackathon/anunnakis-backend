@@ -23,7 +23,10 @@ import { Handler as ProductHandler } from './Product/Handler'
   })
 
   // With Rules
-  application.get('/product/mostAccess', new ProductHandler().getMostAccess)
+  application.get('/product/most_access', new ProductHandler().getMostAccess)
+  application.get('/product/least_access', new ProductHandler().getMostAccess)
+  application.get('/product/most_sales', new ProductHandler().getMostSales)
+  application.get('/product/least_sales', new ProductHandler().getLeastSales)
 
   application.get('/product', new ProductHandler().getAll)
   application.get('/product/:id', new ProductHandler().get)

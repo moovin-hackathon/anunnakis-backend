@@ -24,6 +24,34 @@ export class Handler {
     }
   }
 
+  public async getMostSales(request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const service: Service = new Service(productRepository)
+
+    try {
+      const result = await service.getMostSales(request.query)
+
+      next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
+  public async getLeastSales(request: Request, response: Response, next: NextFunction) {
+    const productRepository: ProductRepository = new ProductRepository(request['models'])
+    const service: Service = new Service(productRepository)
+
+    try {
+      const result = await service.getLeastSales(request.query)
+
+      next(new ItemList(result.items.map(item => this.formatProduct(item)), result.total))
+    } catch (e) {
+      console.error(e)
+      next(e)
+    }
+  }
+
   public async get (request: Request, response: Response, next: NextFunction) {
     const productRepository: ProductRepository = new ProductRepository(request['models'])
     const service: Service = new Service(productRepository)
