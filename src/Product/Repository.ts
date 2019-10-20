@@ -249,7 +249,7 @@ export class ProductRepository extends RepositoryContract {
             ])
         }
       ],
-      order: sequelize.literal('`variations.saleCount` DESC, `variations.totalQuantity` ASC'),
+      order: sequelize.literal('`variations.totalQuantity` ASC, `variations.saleCount` DESC'),
       group: 'Product.id',
       // @ts-ignore
       where
@@ -294,7 +294,7 @@ export class ProductRepository extends RepositoryContract {
             ])
         }
       ],
-      order: sequelize.literal('`variations.saleCount` ASC, `variations.totalQuantity` DESC'),
+      order: sequelize.literal('`variations.totalQuantity` DESC, `variations.saleCount` ASC'),
       group: 'Product.id',
       // @ts-ignore
       where
