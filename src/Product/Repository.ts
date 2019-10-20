@@ -94,6 +94,7 @@ export class ProductRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.saleCount` DESC'),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
@@ -130,6 +131,7 @@ export class ProductRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.saleCount` ASC'),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
@@ -166,6 +168,7 @@ export class ProductRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.accessCount` DESC'),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
@@ -202,6 +205,7 @@ export class ProductRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.accessCount` ASC'),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
@@ -246,6 +250,7 @@ export class ProductRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.saleCount` DESC, `variations.totalQuantity` ASC'),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
@@ -290,6 +295,7 @@ export class ProductRepository extends RepositoryContract {
         }
       ],
       order: sequelize.literal('`variations.saleCount` ASC, `variations.totalQuantity` DESC'),
+      group: 'Product.id',
       // @ts-ignore
       where
     }
