@@ -76,24 +76,19 @@ export class ProductRepository extends RepositoryContract {
 
     const where: WhereOptions<ProductEntity> = {}
 
-    if (filter.category) {
-      where.category = { $like: `%${filter.category}%` }
-    }
-
-    if (filter.title) {
-      where.title = { $like: `%${filter.title}%` }
-    }
-
     const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
       include: [
         {
           model: this.Variation,
-          as: 'variations'
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_sale WHERE `variation_sale`.`variation_id` = `variations`.`id`)))'), 'saleCount'],
+          ]),
         }
       ],
-      order: [
-        ['sale', 'DESC']
-      ],
+      order: sequelize.literal('`variations.saleCount` DESC'),
       // @ts-ignore
       where
     }
@@ -105,7 +100,7 @@ export class ProductRepository extends RepositoryContract {
 
     this.applyPaginator(filter, options)
 
-    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+    const items = (await this.Product.findAll(options))
 
     return {
       items,
@@ -117,24 +112,19 @@ export class ProductRepository extends RepositoryContract {
 
     const where: WhereOptions<ProductEntity> = {}
 
-    if (filter.category) {
-      where.category = { $like: `%${filter.category}%` }
-    }
-
-    if (filter.title) {
-      where.title = { $like: `%${filter.title}%` }
-    }
-
     const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
       include: [
         {
           model: this.Variation,
-          as: 'variations'
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_sale WHERE `variation_sale`.`variation_id` = `variations`.`id`)))'), 'saleCount'],
+          ]),
         }
       ],
-      order: [
-        ['sale', 'ASC']
-      ],
+      order: sequelize.literal('`variations.saleCount` ASC'),
       // @ts-ignore
       where
     }
@@ -146,7 +136,7 @@ export class ProductRepository extends RepositoryContract {
 
     this.applyPaginator(filter, options)
 
-    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+    const items = (await this.Product.findAll(options))
 
     return {
       items,
@@ -195,15 +185,18 @@ export class ProductRepository extends RepositoryContract {
     const where: WhereOptions<ProductEntity> = {}
 
     const options: IFindOptions<ProductEntity> = {
+      subQuery: false,
       include: [
         {
           model: this.Variation,
-          as: 'variations'
+          as: 'variations',
+          attributes: Object.keys(this.Variation.attributes).concat([
+            //@ts-ignore
+            [sequelize.literal('(sum((SELECT COUNT(*) FROM variation_access WHERE `variation_access`.`variation_id` = `variations`.`id`)))'), 'accessCount'],
+          ]),
         }
       ],
-      order: [
-        ['sale', 'ASC']
-      ],
+      order: sequelize.literal('`variations.accessCount` ASC'),
       // @ts-ignore
       where
     }
@@ -215,7 +208,7 @@ export class ProductRepository extends RepositoryContract {
 
     this.applyPaginator(filter, options)
 
-    const items = (await this.Product.findAll(options)).map(ProductEntity.build)
+    const items = (await this.Product.findAll(options))
 
     return {
       items,
