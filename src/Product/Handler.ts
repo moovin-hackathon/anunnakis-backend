@@ -83,6 +83,7 @@ export class Handler {
       next(e)
     }
   }
+  
   public async getLeastAccess (request: Request, response: Response, next: NextFunction) {
     const productRepository: ProductRepository = new ProductRepository(request['models'])
     const service: Service = new Service(productRepository)
