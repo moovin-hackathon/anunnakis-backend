@@ -9,15 +9,17 @@ export default (sequelize, dataTypes: DataTypes) => {
     },
     variationId: {
       type: dataTypes.UUIDV4,
+      field: 'variation_id',
       references: {
         model: 'Variation',
         key: 'id'
       }
     },
+    createdAt: dataTypes.DATE
   }, {
     tableName: 'variation_sale',
     timestamps: true,
-    createdAt: true,
+    createdAt: 'createdAt',
     updatedAt: false
   })
 

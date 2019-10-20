@@ -8,12 +8,16 @@ import { ProductEntity } from '../Shared/Entity'
 export class ProductRepository extends RepositoryContract {
   readonly Product
   readonly Variation
+  readonly VariationSale
+  readonly VariationAccess
 
   public constructor (readonly models) {
     super()
 
     this.Product = this.models.Product
     this.Variation = this.models.Variation
+    this.VariationSale = this.models.VariationSale
+    this.VariationAccess = this.models.VariationAccess
   }
 
   public async getAll (filter: Filter): Promise<ItemListModel<ProductEntity>> {
@@ -32,7 +36,17 @@ export class ProductRepository extends RepositoryContract {
       include: [
         {
           model: this.Variation,
-          as: 'variations'
+          as: 'variations',
+          include: [
+            {
+              model: this.VariationAccess,
+              as: 'accesses'
+            },
+            {
+              model: this.VariationSale,
+              as: 'sales'
+            }
+          ]
         }
       ],
       order: [
@@ -64,7 +78,17 @@ export class ProductRepository extends RepositoryContract {
       include: [
         {
           model: this.Variation,
-          as: 'variations'
+          as: 'variations',
+          include: [
+            {
+              model: this.VariationAccess,
+              as: 'accesses'
+            },
+            {
+              model: this.VariationSale,
+              as: 'sales'
+            }
+          ]
         }
       ],
       order: [
