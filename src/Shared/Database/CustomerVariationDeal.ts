@@ -39,11 +39,12 @@ export default (sequelize, dataTypes: DataTypes) => {
     dealUriExpires: {
       field: 'deal_uri_expires',
       type: dataTypes.DATE
-    }
+    },
+    createdAt: dataTypes.DATE
   }, {
     tableName: 'customer_variation_deal',
     timestamps: true,
-    createdAt: true,
+    createdAt: 'createdAt',
     updatedAt: false
   })
 

@@ -23,6 +23,8 @@ export class VariationEntity {
 
   public gridType: VariationGridType
 
+  public productId: string
+
   public product: ProductEntity
 
   public sales: VariationSaleEntity[]
@@ -40,7 +42,11 @@ export class VariationEntity {
     entity.uri = data.uri
     entity.color = data.color
     entity.grid = data.grid
-    entity.gridType = VariationGridType[data.gridType.toUpperCase()]
+    entity.productId = data.productId
+
+    if (data.gridType) {
+      entity.gridType = VariationGridType[data.gridType.toUpperCase()]
+    }
 
     if (data.product) {
       entity.product = ProductEntity.build(data.product)

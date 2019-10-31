@@ -3,6 +3,8 @@ export class VariationSaleEntity {
 
   public variationId: string
 
+  public createdAt: Date
+
   public static build (data): VariationSaleEntity {
     const entity = new VariationSaleEntity()
     entity.id = data.id
